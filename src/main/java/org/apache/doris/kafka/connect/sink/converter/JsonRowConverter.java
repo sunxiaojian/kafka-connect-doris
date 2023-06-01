@@ -40,6 +40,9 @@ public class JsonRowConverter implements RowConverter<String> {
 
     private final TimeZone timeZone;
 
+    public JsonRowConverter() {
+        this.timeZone = TimeZone.getDefault();
+    }
     public JsonRowConverter(TimeZone timeZone) {
         this.timeZone = timeZone;
     }

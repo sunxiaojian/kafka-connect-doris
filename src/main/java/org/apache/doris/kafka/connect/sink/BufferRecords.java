@@ -19,7 +19,9 @@ package org.apache.doris.kafka.connect.sink;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.doris.kafka.connect.config.DorisSinkConfig;
+import org.apache.doris.kafka.connect.sink.converter.ConverterFactory;
 import org.apache.doris.kafka.connect.sink.converter.JsonRowConverter;
+import org.apache.doris.kafka.connect.sink.converter.RowConverter;
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.sink.SinkRecord;
 
@@ -110,7 +112,7 @@ public class BufferRecords implements Closeable {
 
     private void executeUpdates(List<SinkRecord> records) throws IOException {
         StringBuilder builder = new StringBuilder();
-        JsonRowConverter converter = new JsonRowConverter(config.getTimeZone());
+        RowConverter converter = ConverterFactory.getConverter(config.getFormat(), config.getTimeZone());
         boolean isFirstRecord = true;
         for (SinkRecord record : records) {
             if (isFirstRecord) {
