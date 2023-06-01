@@ -14,35 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.doris.kafka.connect.sink;
+package org.apache.doris.kafka.connect.exception;
 
-import org.apache.doris.kafka.connect.config.DorisSinkConfig;
-import org.apache.doris.kafka.connect.utils.VersionUtil;
-import org.apache.kafka.connect.sink.SinkRecord;
-import org.apache.kafka.connect.sink.SinkTask;
-
-import java.util.Collection;
-import java.util.Map;
-
-/**
- * kafka connect doris sink task
- */
-public class DorisSinkTask extends SinkTask {
-    private DorisSinkConfig config;
-
-    public void start(Map<String, String> props) {
-        this.config = new DorisSinkConfig(props);
-    }
-
-    public void put(Collection<SinkRecord> records) {
-
-    }
-
-    public void stop() {
-        // No-op
-    }
-
-    public String version() {
-        return VersionUtil.getVersion();
-    }
+public class DorisException extends RuntimeException {
+    // Do nothing
 }

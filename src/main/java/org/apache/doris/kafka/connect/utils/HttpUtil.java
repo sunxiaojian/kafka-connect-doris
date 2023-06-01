@@ -14,35 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.doris.kafka.connect.sink;
+package org.apache.doris.kafka.connect.utils;
 
-import org.apache.doris.kafka.connect.config.DorisSinkConfig;
-import org.apache.doris.kafka.connect.utils.VersionUtil;
-import org.apache.kafka.connect.sink.SinkRecord;
-import org.apache.kafka.connect.sink.SinkTask;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultRedirectStrategy;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 
-import java.util.Collection;
-import java.util.Map;
+public class HttpUtil {
+    private final static HttpClientBuilder httpClientBuilder =
+        HttpClients.custom()
+            .setRedirectStrategy(
+                new DefaultRedirectStrategy() {
+                    @Override
+                    protected boolean isRedirectable(String method) {
+                        return true;
+                    }
+                });
 
-/**
- * kafka connect doris sink task
- */
-public class DorisSinkTask extends SinkTask {
-    private DorisSinkConfig config;
-
-    public void start(Map<String, String> props) {
-        this.config = new DorisSinkConfig(props);
-    }
-
-    public void put(Collection<SinkRecord> records) {
-
-    }
-
-    public void stop() {
-        // No-op
-    }
-
-    public String version() {
-        return VersionUtil.getVersion();
+    public static CloseableHttpClient getHttpClient() {
+        return httpClientBuilder.build();
     }
 }
