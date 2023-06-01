@@ -20,8 +20,8 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.doris.kafka.connect.config.DorisSinkConfig;
 import org.apache.doris.kafka.connect.sink.converter.ConverterFactory;
-import org.apache.doris.kafka.connect.sink.converter.JsonRowConverter;
 import org.apache.doris.kafka.connect.sink.converter.RowConverter;
+import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.sink.SinkRecord;
 
@@ -84,7 +84,7 @@ public class BufferRecords implements Closeable {
         return flushed;
     }
 
-    private List<SinkRecord> flush() throws IOException {
+    public List<SinkRecord> flush() throws IOException {
         if (bufferRecords.isEmpty()) {
             log.debug("Records is empty");
             return new ArrayList<>();
@@ -123,6 +123,10 @@ public class BufferRecords implements Closeable {
             builder.append(converter.convert(record));
         }
         streamLoad.writeRecord(builder.toString(), config.getLabelPrefix());
+    }
+
+    private String generateLabel(){
+        return  config.getLabelPrefix()+"_"+System.currentTimeMillis();
     }
 
     @Override

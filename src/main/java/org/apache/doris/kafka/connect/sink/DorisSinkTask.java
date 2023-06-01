@@ -21,6 +21,7 @@ import org.apache.doris.kafka.connect.utils.VersionUtil;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -30,11 +31,23 @@ import java.util.Map;
 public class DorisSinkTask extends SinkTask {
     private DorisSinkConfig config;
 
+    private BufferRecords bufferRecords;
     public void start(Map<String, String> props) {
         this.config = new DorisSinkConfig(props);
+        this.bufferRecords = new BufferRecords(this.config);
     }
 
     public void put(Collection<SinkRecord> records) {
+
+
+            try {
+                for (SinkRecord record : records) {
+                    bufferRecords.add(record);
+                }
+                bufferRecords.flush();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
     }
 
